@@ -25,6 +25,10 @@ public class PuzzleModel {
 		this.current = board;
 	}
 
+	/*---FUNCTION TO GET PREV BOARD---
+	iterates over solution path and gets the board after
+	the current board
+	*/
 	public void getNextBoard(){
 		for(int num = 0; num < this.solvepath.size(); num++){
 			if(Arrays.equals(solvepath.get(num), this.current) && num-1 != -1){
@@ -33,6 +37,10 @@ public class PuzzleModel {
 		}
 	}
 
+	/*---FUNCTION TO GET PREV BOARD---
+	iterates over solution path and gets the board before
+	the current board
+	*/
 	public void getPrevBoard(){
 		for(int j = 0; j < this.solvepath.size(); j++){
 			if(Arrays.equals(solvepath.get(j), this.current) && j+1 < this.solvepath.size()){
@@ -170,9 +178,7 @@ public class PuzzleModel {
 	public void writeOutputFile(char[] movelist){
 		//char array to store the reverse of movelist
 		char[] temp = new char[movelist.length];
-		try{
-			Writer writer = null;
-			writer = new BufferedWriter(new FileWriter("puzzle.out"));
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter("puzzle.out"))){
 			int j = 0;
 			//reverses the char array
 			//because the steps are stored last to first
@@ -180,11 +186,9 @@ public class PuzzleModel {
 				temp[j] = movelist[i];
 				j++;
 			}
-			String str = new String(temp);//makes char array temp into string
+			String str = String.valueOf(temp);//makes char array temp into string
 			writer.write(str);
 			writer.close();
-		} catch(FileNotFoundException e) {
-			System.out.println("File input.txt not found");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -195,13 +199,20 @@ public class PuzzleModel {
 	/*---FUNCTION THAT CALLS BFS SOLVER---*/
 	public void solve(GUI gui, Solver.SOLVE_METHOD method) {
 		Map<String, int[]> parent = null;
+		//holds the boards of solution path
+		LinkedList<int[]> nextBoard = new LinkedList<>();
+
+		if(Arrays.equals(this.current, this.GOAL)){
+			String status = String.format("<html>%d moves<br/>%d expanded nodes</html>", nextBoard.size(), Solver.times);
+			gui.setStatus(status);
+			this.resetBoard();
+			return;
+		}
 
 		this.solving = true;//disables board
 
 		parent = Solver.bfs(getCurrentBoard().clone());
 
-		//puts the solution path in nextBoard
-		LinkedList<int[]> nextBoard = new LinkedList<>();
 		nextBoard.add(GOAL.clone());
 		for(int i = 0; !Arrays.equals(nextBoard.get(i), this.current); i++){
 			nextBoard.add(parent.get(make((nextBoard.get(i)))));
