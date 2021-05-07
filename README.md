@@ -15,5 +15,5 @@ Functionalities:
 Default board configuration: <br />
 ![What it looks like when ran](uponRunning.png)
 
-When Solve button is clicked: <br />
+When Solve button and next button is clicked: <br />
 ![What it looks like when solve button clicked](whenSolveClicked.gif)
