@@ -12,7 +12,7 @@ puzzle.in and puzzle3.in are solvable boards
 Functionalities:
 
 * reads input file `puzzle.in` for board face/configuration
-* when solve-bfs button is clicked, disables board and previous and next board button show the solution path
+* when a solve button is clicked, disables board and previous and next board button show the solution path
 * outputs `puzzle.out` file that contains solution path moves (open this file on notepad)
 
 Default board configuration: <br />
