@@ -92,6 +92,25 @@ public class GUI extends JFrame {
                 GUI.this.pack();
             }
         });
+
+        Button_Solve_DFS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(GUI.this.puzzleModel.isSolving()) return;
+                GUI.this.puzzleModel.solve(GUI.this, Solver.SOLVE_METHOD.DFS);
+                GUI.this.pack();
+            }
+        });
+
+        //action listener for the solve button
+        Button_Solve_A.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(GUI.this.puzzleModel.isSolving()) return;
+                GUI.this.puzzleModel.solve(GUI.this, Solver.SOLVE_METHOD.A_STAR);
+                GUI.this.pack();
+            }
+        });
         
         this.drawBoard();
         this.pack();//resize the frame to fit the new size of the buttons
@@ -135,6 +154,8 @@ public class GUI extends JFrame {
         Button_Next = new javax.swing.JButton();
         Button_Reset = new javax.swing.JButton();
         Button_Solve_BFS = new javax.swing.JButton();
+        Button_Solve_DFS = new javax.swing.JButton();
+        Button_Solve_A = new javax.swing.JButton();
         Button_Speed = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         Label_Status = new javax.swing.JLabel();
@@ -188,9 +209,37 @@ public class GUI extends JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         ButtonsPanel.add(Button_Solve_BFS, gridBagConstraints);
+
+        Button_Solve_A.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        Button_Solve_A.setText("Solve - A*");
+        Button_Solve_A.setFocusable(false);
+        Button_Solve_A.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_Solve_AStar_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        ButtonsPanel.add(Button_Solve_A, gridBagConstraints);
+
+        Button_Solve_DFS.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        Button_Solve_DFS.setText("Solve - DFS");
+        Button_Solve_DFS.setFocusable(false);
+        Button_Solve_DFS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_Solve_DFSActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        ButtonsPanel.add(Button_Solve_DFS, gridBagConstraints);
 
         Main_Right.add(ButtonsPanel, java.awt.BorderLayout.CENTER);
 
@@ -316,6 +365,56 @@ public class GUI extends JFrame {
 
     }
 
+    private void Button_Solve_DFSActionPerformed(java.awt.event.ActionEvent evt) {
+            java.awt.GridBagConstraints gridBagConstraints;
+            Button_Back.setText("Previous Board");
+            Button_Back.setFocusable(false);
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 5;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            ButtonsPanel.add(Button_Back, gridBagConstraints);
+
+            Button_Next.setText("Next Board");
+            Button_Next.setFocusable(false);
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 6;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            ButtonsPanel.add(Button_Next, gridBagConstraints);
+            
+
+            //notify the panel to update
+            ButtonsPanel.repaint();
+            ButtonsPanel.revalidate();
+
+    }
+
+    private void Button_Solve_AStar_ActionPerformed(java.awt.event.ActionEvent evt) {
+            java.awt.GridBagConstraints gridBagConstraints;
+            Button_Back.setText("Previous Board");
+            Button_Back.setFocusable(false);
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 5;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            ButtonsPanel.add(Button_Back, gridBagConstraints);
+
+            Button_Next.setText("Next Board");
+            Button_Next.setFocusable(false);
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 6;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            ButtonsPanel.add(Button_Next, gridBagConstraints);
+            
+
+            //notify the panel to update
+            ButtonsPanel.repaint();
+            ButtonsPanel.revalidate();
+
+    }
+
     private void Button_OpenFile_ActionPerformed(java.awt.event.ActionEvent evt){
     }
 
@@ -323,6 +422,8 @@ public class GUI extends JFrame {
     private javax.swing.JButton Button_File;
     private javax.swing.JButton Button_Reset;
     private javax.swing.JButton Button_Solve_BFS;
+    private javax.swing.JButton Button_Solve_A;
+    private javax.swing.JButton Button_Solve_DFS;
     private javax.swing.JButton Button_Speed;
     private javax.swing.JButton Button_Back;
     private javax.swing.JButton Button_Next;

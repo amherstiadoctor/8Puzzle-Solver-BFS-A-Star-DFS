@@ -137,6 +137,7 @@ public class PuzzleModel {
 
 	/*---FUNCTION TO READ FILE FOR BOARD CONFIGURATION---*/
 	public void readInputFile(){
+		//PuzzleModel.this.solving = false; //enables board again
 		chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 		chooser.showOpenDialog(null);
 		File f = chooser.getSelectedFile();
@@ -199,9 +200,23 @@ public class PuzzleModel {
 	/*---FUNCTION THAT CALLS BFS SOLVER---*/
 	public void solve(GUI gui, Solver.SOLVE_METHOD method) {
 		Map<String, int[]> parent = null;
+
+		switch(method){
+            case A_STAR:
+                parent = Solver.aStar(getCurrentBoard().clone());
+                break;
+            case DFS:
+                parent = Solver.dfs(getCurrentBoard().clone());
+                break;
+             case BFS :
+				parent = Solver.bfs(getCurrentBoard().clone());
+				break;
+		}
+
 		//holds the boards of solution path
 		LinkedList<int[]> nextBoard = new LinkedList<>();
 
+		//if solve button is clicked on when goal state is current state
 		if(Arrays.equals(this.current, this.GOAL)){
 			String status = String.format("<html>%d moves<br/>%d expanded nodes</html>", nextBoard.size(), Solver.times);
 			gui.setStatus(status);
@@ -210,8 +225,6 @@ public class PuzzleModel {
 		}
 
 		this.solving = true;//disables board
-
-		parent = Solver.bfs(getCurrentBoard().clone());
 
 		nextBoard.add(GOAL.clone());
 		for(int i = 0; !Arrays.equals(nextBoard.get(i), this.current); i++){
