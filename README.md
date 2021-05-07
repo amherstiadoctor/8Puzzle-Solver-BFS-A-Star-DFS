@@ -8,6 +8,6 @@ run with
 
 Functionalities:
 
-*reads input file `puzzle.in` for board face/configuration
-*when solve-bfs button is clicked, disables board and previous and next board button show the solution path
-*outputs `puzzle.out` file that contains solution path moves
+* reads input file `puzzle.in` for board face/configuration
+* when solve-bfs button is clicked, disables board and previous and next board button show the solution path
+* outputs `puzzle.out` file that contains solution path moves
