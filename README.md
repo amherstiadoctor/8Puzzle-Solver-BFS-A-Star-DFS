@@ -11,3 +11,6 @@ Functionalities:
 * reads input file `puzzle.in` for board face/configuration
 * when solve-bfs button is clicked, disables board and previous and next board button show the solution path
 * outputs `puzzle.out` file that contains solution path moves
+
+![What it looks like when ran](uponRunning.png)
+![What it looks like when solve button clicked](whenSolveClicked.png)
