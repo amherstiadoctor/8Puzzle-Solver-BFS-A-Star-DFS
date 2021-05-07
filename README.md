@@ -12,8 +12,8 @@ Functionalities:
 * when solve-bfs button is clicked, disables board and previous and next board button show the solution path
 * outputs `puzzle.out` file that contains solution path moves
 
-Default board configuration:
+Default board configuration: <br />
 ![What it looks like when ran](uponRunning.png)
 
-When Solve button is clicked:
+When Solve button is clicked: <br />
 ![What it looks like when solve button clicked](whenSolveClicked.gif)
