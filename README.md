@@ -18,4 +18,4 @@ Default board configuration: <br />
 When Solve button and next button is clicked: <br />
 ![What it looks like when solve button clicked](whenSolveClicked.gif)
 
-##OPEN THE PUZZLE.OUT FILE ON NOTEPAD
+## OPEN THE PUZZLE.OUT FILE ON NOTEPAD
