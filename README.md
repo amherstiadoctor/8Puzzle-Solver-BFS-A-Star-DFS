@@ -6,6 +6,9 @@ compile with
 run with
 `java -cp bin EightPuzzle`
 
+puzzle.in and puzzle3.in are solvable board
+puzzle2.in is an unsolvable board
+
 Functionalities:
 
 * reads input file `puzzle.in` for board face/configuration
