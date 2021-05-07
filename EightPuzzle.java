@@ -1,4 +1,3 @@
-}
 import java.util.logging.*;
 import javax.swing.*;
 
