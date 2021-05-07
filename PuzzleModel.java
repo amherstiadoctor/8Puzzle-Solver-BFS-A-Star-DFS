@@ -7,10 +7,9 @@ import java.io.*;
 
 public class PuzzleModel {
 	public static enum MOVES{UP, DOWN, RIGHT, LEFT};
-	public static enum SPEED{SLOW, MEDIUM, FAST};
-	private int timerSpeed = 500;
 	public static final int[] GOAL = {1, 2, 3, 4, 5, 6, 7, 8, 0};
 	private int[] current = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+	private LinkedList<int[]> solvepath = new LinkedList<int[]>();
 	private boolean solving = false;
 	JFileChooser chooser = new JFileChooser();
 
@@ -26,20 +25,26 @@ public class PuzzleModel {
 		this.current = board;
 	}
 
-    public void setTimerSpeed(SPEED speed){
-        switch(speed){
-            case SLOW:
-                this.timerSpeed = 700;
-                break;
-            case MEDIUM:
-                this.timerSpeed = 300;
-                break;
-            case FAST:
-                this.timerSpeed = 100;
-                break;
-        }
-    }
+	public void getNextBoard(){
+		for(int num = 0; num < this.solvepath.size(); num++){
+			if(Arrays.equals(solvepath.get(num), this.current) && num-1 != -1){
+				current = solvepath.get(num-1);
+			}
+		}
+	}
 
+	public void getPrevBoard(){
+		for(int j = 0; j < this.solvepath.size(); j++){
+			if(Arrays.equals(solvepath.get(j), this.current) && j+1 < this.solvepath.size()){
+				current = solvepath.get(j+1);
+				break;	
+			}
+		}
+	}
+	/*---FUNCTION TO DETERMINE WHAT TILE WAS CLICKED---
+	checks if tile clicked can be moved and then
+	calls the move function
+	*/
 	public void tilePressed(int btn) {
 		int blank = getBlankIndex(current);
 
@@ -53,7 +58,9 @@ public class PuzzleModel {
 			move(current, MOVES.UP);
 		}
 	}
-
+	/*---FUNCTION TO DETERMINE WHAT TILES TO MOVE---
+	calls swap to actually swap the tiles
+	*/
 	public static void move(int[] board, MOVES toMove) {
 		int blank = getBlankIndex(board);
 
@@ -74,15 +81,29 @@ public class PuzzleModel {
 		}
 	}
 
+	/*---FUNCTION THAT SWAPS TILES WHEN CLICKED---*/
+	public static void swap(int[] board, int i, int j){
+		try{
+			int iv = board[i];
+			int jv = board[j];
+			board[i] = jv;
+			board[j] = iv;
+		}catch(ArrayIndexOutOfBoundsException ex){
+		}
+	}
+
+	/*---FUNCTION TO CHECK IF REACH GOAL BOARD---*/
 	public boolean isSolved() {
 		return Arrays.equals(this.current, this.GOAL);
 	}
-
+	/*---FUNCTION TO RESET BOARD---*/
 	public void resetBoard() {
 		for(int i = 0; i < current.length-1 ; ++i) current[i] = (int)(i+1);
 		current[current.length - 1] = 0;
-	}
 
+		PuzzleModel.this.solving = false; //enables board again
+	}
+	/*---FUNCTION TO CHECK WHETHER BOARD CAN BE SOLVED---*/
 	public boolean isSolvable(int board[]) {
 		int inv = 0;
 		for(int i = 0; i < board.length; ++i){
@@ -95,7 +116,7 @@ public class PuzzleModel {
 
 		return (inv % 2 == 0);
 	}
-
+	/*---FUNCTION TO FIND WHERE THE 0 IS ON BOARD---*/
 	public static int getBlankIndex(int[] board) {
 		for(int i = 0; i < board.length; ++i){
 			if(board[i] == 0){
@@ -106,16 +127,7 @@ public class PuzzleModel {
 		return -1;
 	}
 
-	public static void swap(int[] board, int i, int j){
-		try{
-			int iv = board[i];
-			int jv = board[j];
-			board[i] = jv;
-			board[j] = iv;
-		}catch(ArrayIndexOutOfBoundsException ex){
-		}
-	}
-
+	/*---FUNCTION TO READ FILE FOR BOARD CONFIGURATION---*/
 	public void readInputFile(){
 		chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 		chooser.showOpenDialog(null);
@@ -151,11 +163,25 @@ public class PuzzleModel {
 		}
 	}
 
-	public void writeOutputFile(){
-		try{//writting
+	/*-----FUNCTION TO WRITE TO OUTPUT FILE-----
+	takes char array movelist and reverses it
+	and then writes it to a file
+	*/
+	public void writeOutputFile(char[] movelist){
+		//char array to store the reverse of movelist
+		char[] temp = new char[movelist.length];
+		try{
 			Writer writer = null;
 			writer = new BufferedWriter(new FileWriter("puzzle.out"));
-			writer.write("Lord Help Me"+"\n");
+			int j = 0;
+			//reverses the char array
+			//because the steps are stored last to first
+			for(int i = movelist.length-2; i >= 0; i--){
+				temp[j] = movelist[i];
+				j++;
+			}
+			String str = new String(temp);//makes char array temp into string
+			writer.write(str);
 			writer.close();
 		} catch(FileNotFoundException e) {
 			System.out.println("File input.txt not found");
@@ -165,53 +191,56 @@ public class PuzzleModel {
 		}
 	}
 
+
+	/*---FUNCTION THAT CALLS BFS SOLVER---*/
 	public void solve(GUI gui, Solver.SOLVE_METHOD method) {
 		Map<String, int[]> parent = null;
 
-		this.solving = true;
-		long time = System.nanoTime();
+		this.solving = true;//disables board
 
 		parent = Solver.bfs(getCurrentBoard().clone());
 
-		time = (System.nanoTime() - time) / 1000000;
-
-		Stack<int[]> nextBoard = new Stack<>();
+		//puts the solution path in nextBoard
+		LinkedList<int[]> nextBoard = new LinkedList<>();
 		nextBoard.add(GOAL.clone());
-		while(!Arrays.equals(nextBoard.peek(), this.current)){
-			nextBoard.add(parent.get(make(nextBoard.peek())));
+		for(int i = 0; !Arrays.equals(nextBoard.get(i), this.current); i++){
+			nextBoard.add(parent.get(make((nextBoard.get(i)))));
 		}
-		nextBoard.pop();
+		/*this block of code declares a movelist that will store
+		the moves done towards solution	by iterating through nextBoard
+		and comparing a board and the board next to it to determine
+		where the blank tile moved
+		*/
+		char[] movelist = new char[nextBoard.size()];
+		int[] second = new int[9];
 
-		String status = String.format("<html>%d moves<br/>%d expanded nodes</html>", nextBoard.size(), Solver.times);
+		for(int i = 0; i<nextBoard.size(); i++){
+			int[] first = nextBoard.get(i);
+			if(i < 4){
+				second = nextBoard.get(i+1);
+
+				int j = getBlankIndex(first);
+				int k = getBlankIndex(second);
+
+				if(k == j-1){
+					movelist[i] = 'R'; 
+				}else if(k == j+1){
+					movelist[i] = 'L'; 
+				}else if(k == j+3){
+					movelist[i] = 'U'; 
+				}else if(k == j-3){
+					movelist[i] = 'D'; 
+				}
+
+			}
+		}
+
+		writeOutputFile(movelist);//calls to output the created movelist into a file
+
+		this.solvepath = nextBoard;
+
+		String status = String.format("<html>%d moves<br/>%d expanded nodes</html>", nextBoard.size()-1, Solver.times);
 		gui.setStatus(status);
-
-		new Timer(this.timerSpeed, new ActionListener(){
-            private Stack<int[]> boards;
-            public PuzzleModel bc;
-            
-            //gives the timer the stack of states, the gui and the board controller
-            //and disables the whole GUI untill finished
-            public ActionListener me(Stack<int[]> stk, PuzzleModel _bc){
-                this.boards = stk;
-                this.bc = _bc;
-                return this;
-            }
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                //if the stack is empty, close enable the GUI and stop the timer
-                if(boards.empty() || isSolved()){
-                    PuzzleModel.this.solving = false;
-                    ((Timer)e.getSource()).stop();
-                    return;
-                }
-                
-                //set the current board to the given state and update the GUI
-                bc.setCurrentBoard(boards.pop());
-                gui.drawBoard();
-            }
-        }.me(nextBoard, this)).start();    //start the timer right away
 	}
 
 	private String make(int[] arr) {

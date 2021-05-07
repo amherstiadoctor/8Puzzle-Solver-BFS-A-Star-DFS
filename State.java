@@ -4,11 +4,9 @@ public class State implements Comparable<State> {
 	private final int board[];
 	private final int cost;
 	private final int weight;
-	private PuzzleModel.MOVES thismove;
 
-	public State(int b[], int _cost, PuzzleModel.MOVES move){
+	public State(int b[], int _cost){
 		this.board = b;
-		this.thismove = null;
 		cost = _cost;
 		weight = cost + heuristic();
 	}
@@ -19,10 +17,6 @@ public class State implements Comparable<State> {
 
 	public int getCost() {
 		return this.cost;
-	}
-
-	public PuzzleModel.MOVES getMove(){
-		return this.thismove;
 	}
 
 	private int heuristic() {
@@ -36,15 +30,17 @@ public class State implements Comparable<State> {
 		return h;
 	}
 
+	/*---FUNCTION TO CREATE NODES---
+	expands the possible moves of a certain board
+	*/
 	public ArrayList<State> getNextStates() {
 		ArrayList<State> states = new ArrayList<>();
 
 		for(PuzzleModel.MOVES move : PuzzleModel.MOVES.values()) {
 			int newBoard[] = this.board.clone();
 			PuzzleModel.move(newBoard, move);
-			this.thismove = move;
 			if(!Arrays.equals(this.board, newBoard)){
-				states.add(new State(newBoard, this.cost + 1, this.thismove));
+				states.add(new State(newBoard, this.cost + 1));
 			}
 		}
 
