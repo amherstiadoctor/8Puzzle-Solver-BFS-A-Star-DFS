@@ -13,4 +13,4 @@ Functionalities:
 * outputs `puzzle.out` file that contains solution path moves
 
 ![What it looks like when ran](uponRunning.png)
-![What it looks like when solve button clicked](whenSolveClicked.png)
+![What it looks like when solve button clicked](whenSolveClicked.gif)
