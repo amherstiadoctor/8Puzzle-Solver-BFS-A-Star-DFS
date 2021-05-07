@@ -1,4 +1,4 @@
-# CMSC 170 8 Puzzle BFS Solver with GUI
+# CMSC 170 8 Puzzle BFS, DFS, and A* Solver with GUI
 
 compile with
 `javac -d bin *.java`
